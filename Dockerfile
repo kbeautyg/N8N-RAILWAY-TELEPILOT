@@ -1,26 +1,19 @@
 FROM n8nio/n8n:latest
 
-# Рабочая директория
+# Рабочая директория n8n
 WORKDIR /data
 
-# Устанавливаем необходимые пакеты
+# Устанавливаем npm-библиотеки
 USER root
-
 RUN npm install cheerio axios moment
-# Устанавливем n8n
-RUN npm install -g n8n
-# Создаем директорию для конфигурации n8n
-RUN mkdir -p /home/node/.n8n && chown -R node:node /home/node/.n8n
 
-# Устанавливаем Telepilot-ноду в правильную папку
+# Устанавливаем Telepilot-плагин
 RUN mkdir -p /home/node/.n8n/nodes && \
     cd /home/node/.n8n/nodes && \
     npm install @telepilotco/n8n-nodes-telepilot
 
-# Назначаем права на .n8n пользователю node (иначе n8n не сможет туда писать)
+# ⚠️ Назначаем владельца директории .n8n
 RUN chown -R node:node /home/node/.n8n
 
-# Переключаемся на пользователя node
+# Возвращаемся к пользователю node (по умолчанию n8n работает под ним)
 USER node
-# u041au043eu043cu0430u043du0434u0430 u0434u043bu044f u0437u0430u043fu0443u0441u043au0430 n8n
-CMD ["n8n", "start"]
