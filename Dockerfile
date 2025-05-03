@@ -4,17 +4,16 @@ WORKDIR /data
 
 USER root
 
-# Устанавливаем доп. зависимости, если нужны внутри workflow
+# (по желанию) Ставим доп. зависимости
 RUN npm install cheerio axios moment
 
-# ✅ Устанавливаем строго нужную версию TelePilot и без dev-зависимостей
+# 🟢 Устанавливаем исправленный TelePilot 0.5.1
 RUN mkdir -p /home/node/.n8n/nodes && \
     cd /home/node/.n8n/nodes && \
-    npm install --production @telepilotco/n8n-nodes-telepilot@0.5.39
+    npm install --production @telepilotco/n8n-nodes-telepilot@0.5.1
 
 # Кастомный entrypoint
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Запуск
 ENTRYPOINT ["/entrypoint.sh"]
