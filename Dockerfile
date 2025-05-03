@@ -1,24 +1,21 @@
-FROM n8nio/n8n:1.91.1
+FROM n8nio/n8n:1.90.2
 
-USER root
+
 WORKDIR /data
 
-# Установим дополнительные зависимости, если нужны
+USER root
+
 RUN npm install cheerio axios moment
 
-# 📦 Удаляем старые версии TelePilot, если вдруг остались
-RUN rm -rf /home/node/.n8n/nodes/@inite || true && \
-    rm -rf /home/node/.n8n/nodes/node_modules/@inite || true
+# Устанавливаем Telepilot
+RUN mkdir -p /home/node/.n8n/nodes && \
+    cd /home/node/.n8n/nodes && \
+    npm install @telepilotco/n8n-nodes-telepilot
 
-# 🧩 Кладем локальный фиксированный код TelePilot без context.emit override
-COPY ./telepilot-patched /home/node/.n8n/nodes/@inite/n8n-nodes-telepilot
-
-# ✅ Выставим права
-RUN chown -R node:node /home/node/.n8n
-
-# 🔐 entrypoint
+# Копируем наш кастомный entrypoint
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# 🚀 Запуск
+# 🟡 Используем root на этапе запуска,
+# но внутри запускаем от имени node через su-exec
 ENTRYPOINT ["/entrypoint.sh"]
