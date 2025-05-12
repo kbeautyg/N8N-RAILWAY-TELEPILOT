@@ -1,23 +1,17 @@
-FROM n8nio/n8n:1.90.2
+FROM node:18-slim
 
-WORKDIR /data
-
+# Установка зависимостей
 USER root
-
-# Установка Python и зависимостей
 RUN apt-get update && apt-get install -y \
-  python3 \
-  python3-pip \
-  gcc \
-  libffi-dev \
-  libssl-dev \
-  build-essential \
+  python3 python3-pip \
+  gcc libffi-dev libssl-dev build-essential \
+  curl gnupg libnss3 libxss1 libatk1.0-0 libatk-bridge2.0-0 libdrm2 libgtk-3-0 libxcomposite1 libxdamage1 libxrandr2 libgbm1 ca-certificates \
   && pip3 install pandas openpyxl
 
-# Устанавливаем JavaScript-зависимости
-RUN npm install cheerio axios moment
+# Установка n8n
+RUN npm install -g n8n
 
-# Устанавливаем Telepilot
+# Установка Telepilot
 RUN mkdir -p /home/node/.n8n/nodes && \
     cd /home/node/.n8n/nodes && \
     npm install @telepilotco/n8n-nodes-telepilot
@@ -26,5 +20,10 @@ RUN mkdir -p /home/node/.n8n/nodes && \
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Старт от root, но su-exec переключит на node
+# Рабочая директория
+WORKDIR /data
+
+# Экспонируем порт
+EXPOSE 5678
+
 ENTRYPOINT ["/entrypoint.sh"]
