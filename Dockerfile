@@ -9,7 +9,7 @@ RUN npm install cheerio axios moment
 # Устанавливаем Telepilot
 RUN mkdir -p /home/node/.n8n/nodes && \
     cd /home/node/.n8n/nodes && \
-    npm install @telepilotco/n8n-nodes-telepilot
+    npm uninstall @telepilotco/n8n-nodes-telepilot
 
 # Копируем наш кастомный entrypoint
 COPY entrypoint.sh /entrypoint.sh
