@@ -6,8 +6,6 @@ WORKDIR /data
 USER root
 
 RUN npm install cheerio axios moment
-RUN apt-get update && apt-get install -y python3-pip
-RUN pip install openpyxl
 # Устанавливаем Telepilot
 RUN mkdir -p /home/node/.n8n/nodes && \
     cd /home/node/.n8n/nodes && \
